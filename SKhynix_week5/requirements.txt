@@ -1,0 +1,18 @@
+# 기본 패키지들
+openpyxl
+pandas
+matplotlib
+seaborn
+scipy
+scikit-learn
+tqdm
+
+# 보조 패키지들
+pyyaml
+
+# cuda 버젼에 맞게 pytorch 설정 (https://pytorch.org/get-started/previous-versions/)
+# 별도로 아래의 명령어로 설치해야 함
+# !pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+
+# TabTransformer 패키지
+tab-transformer-pytorch
