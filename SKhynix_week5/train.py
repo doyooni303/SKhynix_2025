@@ -59,37 +59,113 @@ class MaskedMSELoss(nn.Module):
         return mse
 
 
-def compute_metrics(predictions, targets, masks, padding_value: float = -9999.0):
-    """패딩을 고려한 메트릭 계산"""
-    valid_mask = ~masks
+# def compute_metrics(predictions, targets, masks, padding_value: float = -9999.0):
+#     """패딩을 고려한 메트릭 계산"""
+#     valid_mask = ~masks
 
-    if valid_mask.sum() == 0:
-        return {"mse": 0.0, "rmse": 0.0, "mae": 0.0, "mape": 0.0, "valid_count": 0}
+#     if valid_mask.sum() == 0:
+#         return {"mse": 0.0, "rmse": 0.0, "mae": 0.0, "mape": 0.0, "valid_count": 0}
 
-    valid_predictions = predictions[valid_mask]
-    valid_targets = targets[valid_mask]
+#     valid_predictions = predictions[valid_mask]
+#     valid_targets = targets[valid_mask]
 
-    # CPU로 변환
-    valid_predictions = valid_predictions.detach().cpu().numpy()
-    valid_targets = valid_targets.detach().cpu().numpy()
+#     # CPU로 변환
+#     valid_predictions = valid_predictions.detach().cpu().numpy()
+#     valid_targets = valid_targets.detach().cpu().numpy()
 
+#     mse = np.mean((valid_predictions - valid_targets) ** 2)
+#     rmse = np.sqrt(mse)
+#     mae = np.mean(np.abs(valid_predictions - valid_targets))
+
+#     # MAPE 계산 (0으로 나누기 방지)
+#     epsilon = 1e-8
+#     abs_targets = np.abs(valid_targets)
+#     abs_errors = np.abs(valid_predictions - valid_targets)
+#     safe_targets = np.maximum(abs_targets, epsilon)
+#     mape = np.mean(abs_errors / safe_targets * 100)
+
+#     return {
+#         "mse": mse,
+#         "rmse": rmse,
+#         "mae": mae,
+#         "mape": mape,
+#         "valid_count": len(valid_predictions),
+#     }
+
+
+def compute_metrics(
+    predictions, targets, masks, padding_value: float = 0.0, exclude_zeros=True
+):
+    """
+    패딩을 고려한 메트릭 계산
+
+    Args:
+        predictions: 예측값 텐서
+        targets: 실제값 텐서
+        masks: 패딩 마스크 (True가 패딩)
+        padding_value: 패딩 값
+        exclude_zeros: True면 MAPE/SMAPE 계산 시 타겟 0 제외,
+                      False면 0도 포함 (epsilon으로 처리)
+    """
+
+    # CPU로 변환 후 numpy 배열로 변환
+    valid_predictions = predictions.detach().cpu().numpy()
+    valid_targets = targets.detach().cpu().numpy()
+
+    # 기본 메트릭 (모든 유효 데이터 포함)
     mse = np.mean((valid_predictions - valid_targets) ** 2)
     rmse = np.sqrt(mse)
     mae = np.mean(np.abs(valid_predictions - valid_targets))
 
-    # MAPE 계산 (0으로 나누기 방지)
-    epsilon = 1e-8
-    abs_targets = np.abs(valid_targets)
-    abs_errors = np.abs(valid_predictions - valid_targets)
-    safe_targets = np.maximum(abs_targets, epsilon)
-    mape = np.mean(abs_errors / safe_targets * 100)
+    if exclude_zeros:
+        # 타겟이 0이 아닌 경우만 필터링
+        non_zero_mask = valid_targets != 0
+        non_zero_count = non_zero_mask.sum()
+
+        if non_zero_count > 0:
+            filtered_predictions = valid_predictions[non_zero_mask]
+            filtered_targets = valid_targets[non_zero_mask]
+
+            abs_errors = np.abs(filtered_predictions - filtered_targets)
+            abs_targets = np.abs(filtered_targets)
+
+            # MAPE
+            mape = np.mean(abs_errors / abs_targets * 100)
+
+            # SMAPE
+            smape = 100 * np.mean(
+                2 * abs_errors / (abs_targets + np.abs(filtered_predictions) + 1e-8)
+            )
+        else:
+            mape = np.nan
+            smape = np.nan
+
+    else:
+        # 0도 포함하여 계산 (epsilon 사용)
+        epsilon = 1e-8
+        abs_targets = np.abs(valid_targets)
+        abs_errors = np.abs(valid_predictions - valid_targets)
+
+        # MAPE - epsilon으로 0 처리
+        safe_targets = np.maximum(abs_targets, epsilon)
+        mape = np.mean(abs_errors / safe_targets * 100)
+
+        # SMAPE - epsilon으로 0 처리
+        denominator = (abs_targets + np.abs(valid_predictions)) / 2 + epsilon
+        smape = 100 * np.mean(abs_errors / denominator)
+
+        non_zero_count = (valid_targets != 0).sum()
 
     return {
         "mse": mse,
         "rmse": rmse,
         "mae": mae,
         "mape": mape,
+        "smape": smape,
         "valid_count": len(valid_predictions),
+        "non_zero_count": non_zero_count,
+        "zero_ratio": (len(valid_targets) - non_zero_count) / len(valid_targets) * 100,
+        "exclude_zeros": exclude_zeros,  # 어떤 방식으로 계산했는지 표시
     }
 
 
