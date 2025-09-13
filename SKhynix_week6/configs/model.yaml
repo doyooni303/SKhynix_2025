@@ -1,0 +1,68 @@
+# ========================================
+# Transformer 모델 아키텍처 설정
+# ========================================
+
+# 모델 종류 - 사용할 신경망 아키텍처
+# "transformer": Self-Attention 기반 Transformer 모델
+# 시계열 데이터의 장거리 의존성을 효과적으로 학습
+model_type: "transformer" 
+
+# 범주형 변수 임베딩 차원
+# 8: 각 범주형 변수를 8차원 벡터로 임베딩
+# 범주의 의미를 낮은 차원으로 압축 표현
+embedding_dim: 8
+
+# Transformer 모델 차원 (Hidden dimension)
+# 128: 모델 내부의 표현 차원
+# 모든 sublayer의 출력 차원이 이 값으로 통일됨
+# 크면 표현력↑ 하지만 계산량↑, 과적합 위험↑
+d_model: 128
+
+# Multi-Head Attention의 헤드 개수
+# 8: 8개의 서로 다른 attention 패턴을 병렬로 학습
+# d_model(128) ÷ n_heads(8) = 16차원씩 각 헤드가 처리
+# 다양한 관점에서 시퀀스 간 관계를 포착
+n_heads: 8
+
+# Encoder 레이어 개수
+# 2: Transformer Encoder 블록을 2층 쌓음
+# 각 레이어는 Multi-Head Attention + Feed Forward Network
+# 깊을수록 복잡한 패턴 학습 가능하지만 학습 난이도↑
+e_layers: 2
+
+# Feed Forward Network의 중간 차원
+# 2048: FFN의 은닉층 크기
+# 일반적으로 d_model의 4배 사용 (128 × 4 = 512, 여기서는 2048로 더 크게 설정)
+# Linear(d_model → d_ff) → ReLU → Linear(d_ff → d_model) 구조
+d_ff: 2048
+
+# 드롭아웃 비율 - 과적합 방지
+# 0.1: 학습 시 10%의 연결을 랜덤하게 차단
+# Attention, FFN, Embedding 등 여러 위치에 적용
+dropout: 0.1
+
+# 패딩 값 - 시퀀스 길이 맞추기용
+# 0.0: 실제 데이터가 없는 위치를 0으로 채움
+# 마스킹과 함께 사용하여 패딩 위치 무시
+padding_value: -99
+
+# ProbSparse Attention의 샘플링 factor (Informer 모델용)
+# 일반 Transformer에서는 사용하지 않음
+factor: 5
+
+# 활성화 함수 - Feed Forward Network에서 사용
+# "relu": Rectified Linear Unit (max(0, x))
+# 옵션: "relu", "gelu", "swish", "silu"
+# GELU가 최근 트렌드지만 ReLU가 안정적
+activation: "relu"
+
+# 출력 타입 - 모델 출력 형태
+# "sequence": 전체 시퀀스의 모든 위치에 대해 예측
+# 옵션: "sequence" (전체), "target" (특정 위치만)
+# sequence는 모든 공정에 대한 예측 제공
+output_type: "target"
+
+# 특별 토큰 사용 여부
+# false: [CLS], [SEP] 같은 특별 토큰 사용 안 함
+# true로 설정 시 [SEQ], [GROUP] 토큰 추가로 구조 정보 강화
+use_special_tokens: true

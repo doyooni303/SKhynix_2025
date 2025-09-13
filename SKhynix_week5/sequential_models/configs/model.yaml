@@ -1,0 +1,22 @@
+# 기본 모델 설정
+model_type: "lstm"  # rnn, lstm, gru, rnn_attention, lstm_attention, gru_attention, cnn1d
+embedding_dim: 8
+hidden_dim: 128
+num_layers: 2
+dropout: 0.1
+bidirectional: true
+padding_value: -999.0
+
+# RNN + Attention 설정
+num_attention_heads: 8
+
+# CNN1D 설정  
+kernel_sizes: [3, 5, 7]
+num_filters: 64
+
+# Transformer 설정 (새로 추가)
+d_model: 64                    # Transformer 모델 차원
+num_heads: 4                   # Multi-head attention 헤드 수  
+dim_feedforward: 1024           # Feed-forward 네트워크 차원
+activation: "relu"              # 활성화 함수
+use_positional_encoding: true   # 위치 인코딩 사용 여부

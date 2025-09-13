@@ -1,0 +1,17 @@
+backbone_type: transformer  # transformer or lstm
+embedding_dim: 8
+dropout: 0.1
+
+transformer: 
+  num_layers: 6
+  num_heads: 8
+  hidden_dim: 128
+  feedforward_dim: 512
+  dropout: 0.1
+  activation: relu
+
+lstm: 
+  num_layers: 2
+  hidden_dim: 64
+  dropout: 0.1
+  bidirectional: True

@@ -1,0 +1,24 @@
+file_path: "/home/doyoon/teaching/SKhynix_2025/PBL_TAT_Set_Data Rev2(사외).xlsx"
+categorical_columns: ["oper_group", "days", "shift", "x1"]
+categories: [277, 7, 3, 20]
+continuous_columns: ["x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", 
+                     "x11", "x12", "x13", "x14", "x15", "x16", "x17", "x18", 
+                     "x19", "x20", "x21"]
+target_column: "y"
+sheet_names: ["Data_Set1(사외)", "Data_Set2(사외)"]
+additional_drop_columns: ["lot_cd", "oper_area"]
+
+# 데이터 분할 비율
+train_ratio: 0.8
+val_ratio: 0.1
+test_ratio: 0.1
+
+# 시퀀스 관련 설정
+window_size: 100          # ✅ max_sequence_length → window_size로 변경
+stride: null               # ✅ 새로 추가 (None이면 window_size와 동일)
+embedding_dim: 8
+padding_value: -9999.0   # ✅ -999999.0 → -9999.0으로 변경 (권장)
+
+# 데이터로더 설정
+batch_size: 16
+num_workers: 4

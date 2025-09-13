@@ -1,0 +1,24 @@
+# 훈련 하이퍼파라미터
+num_epochs: 10
+learning_rate: 0.001
+patience: 20
+
+# 검증 및 로깅 간격 설정 (새로 추가)
+val_interval: 2          # 2 에폭마다 검증 실시 (기본값: 1)
+log_interval: 1          # 1 에폭마다 로깅 (기본값: 1)
+
+# 옵티마이저 설정
+optimizer: "adamw"
+weight_decay: 0.01
+
+# 스케줄러 설정
+scheduler: "reduce_on_plateau"
+scheduler_factor: 0.5
+scheduler_patience: 10
+
+# 저장 설정
+save_dir: "250909_lstm"
+exp_name: null  # null이면 자동 생성
+
+# 로깅 설정
+log_file: "training.log"

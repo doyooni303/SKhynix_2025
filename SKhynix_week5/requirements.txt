@@ -7,6 +7,15 @@ scipy
 scikit-learn
 tqdm
 
+# 머신러닝 모델
+xgboost
+lightgbm
+catboost
+
+# XAI 라이브러리
+shap
+captum
+
 # 보조 패키지들
 pyyaml
 

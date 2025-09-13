@@ -1,0 +1,23 @@
+# 훈련 하이퍼파라미터
+num_epochs: 2
+learning_rate: 0.001
+patience: 10
+
+# 모델 저장
+save_path: 'best_model.pth'
+output_dir: 'results'  # 결과 저장 디렉토리 (선택사항)
+exp_name: 'exp1'
+
+# 옵티마이저 설정 (향후 확장)
+optimizer:
+  type: 'adam'
+  weight_decay: 0.0
+
+# 스케줄러 설정 (향후 확장) 
+scheduler:
+  type: 'reduce_on_plateau'
+  factor: 0.5
+  patience: 5
+
+# 로깅 설정
+log_frequency: 50  # 배치 단위 로그 빈도

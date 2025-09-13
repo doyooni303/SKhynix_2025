@@ -1,0 +1,103 @@
+{
+  "exp_name": "transformer_20250908_122738",
+  "config": {
+    "file_path": "/home/doyoon/teaching/SKhynix_2025/PBL_TAT_Set_Data Rev2(\uc0ac\uc678).xlsx",
+    "categorical_columns": [
+      "oper_group",
+      "days",
+      "shift",
+      "x1"
+    ],
+    "categories": [
+      277,
+      7,
+      3,
+      20
+    ],
+    "continuous_columns": [
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "x7",
+      "x8",
+      "x9",
+      "x10",
+      "x11",
+      "x12",
+      "x13",
+      "x14",
+      "x15",
+      "x16",
+      "x17",
+      "x18",
+      "x19",
+      "x20",
+      "x21"
+    ],
+    "target_column": "y",
+    "sheet_names": [
+      "Data_Set1(\uc0ac\uc678)",
+      "Data_Set2(\uc0ac\uc678)"
+    ],
+    "additional_drop_columns": [
+      "lot_cd",
+      "oper_area"
+    ],
+    "train_ratio": 0.8,
+    "val_ratio": 0.1,
+    "test_ratio": 0.1,
+    "window_size": 100,
+    "stride": null,
+    "embedding_dim": 8,
+    "padding_value": -9999.0,
+    "batch_size": 16,
+    "num_workers": 4,
+    "model_type": "transformer",
+    "hidden_dim": 128,
+    "num_layers": 2,
+    "dropout": 0.1,
+    "bidirectional": true,
+    "num_attention_heads": 8,
+    "kernel_sizes": [
+      3,
+      5,
+      7
+    ],
+    "num_filters": 64,
+    "d_model": 64,
+    "num_heads": 8,
+    "dim_feedforward": 1024,
+    "activation": "relu",
+    "use_positional_encoding": true,
+    "num_epochs": 10,
+    "learning_rate": 0.001,
+    "patience": 20,
+    "val_interval": 2,
+    "log_interval": 1,
+    "optimizer": "adamw",
+    "weight_decay": 0.01,
+    "scheduler": "reduce_on_plateau",
+    "scheduler_factor": 0.5,
+    "scheduler_patience": 10,
+    "save_dir": "250909_transformer_d_model_64_num_heads_4",
+    "exp_name": null,
+    "log_file": "training.log"
+  },
+  "test_metrics": {
+    "mse": 0.023875798537870068,
+    "rmse": 0.15451795538988364,
+    "mae": 0.05414557836192477,
+    "mape": 8877.36605229522,
+    "valid_count": 157944
+  },
+  "model_info": {
+    "total_parameters": 303617,
+    "trainable_parameters": 303617,
+    "model_type": "transformer",
+    "feature_dim": null,
+    "best_epoch": 2,
+    "best_val_loss": 0.021271530957465326
+  }
+}
