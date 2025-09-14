@@ -2,6 +2,7 @@
 */*/*.pyc
 */*/*/*.pyc
 */_pycache__
-SKhynix_week5/results/*
-# results
-./sequential_models/results/*
+
+*/*/results/*
+*/results/*
+*/results/*.log
