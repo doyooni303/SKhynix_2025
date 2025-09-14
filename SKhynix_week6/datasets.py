@@ -5,6 +5,8 @@ from typing import Dict, List, Tuple
 import numpy as np
 import pandas as pd
 
+from sklearn.preprocessing import LabelEncoder
+
 # PyTorch 라이브러리
 import torch
 from torch.utils.data import Dataset
@@ -14,6 +16,47 @@ import logging
 
 # 로거 설정 (선택사항 - 없으면 제거하거나 다음과 같이 설정)
 logger = logging.getLogger(__name__)
+
+
+class CategoricalProcessor:
+    """범주형 변수 임베딩을 위한 처리기"""
+
+    def __init__(self, embedding_dim: int = 8):
+        self.embedding_dim = embedding_dim
+        self.label_encoders = {}
+        self.vocab_sizes = {}
+        self.categorical_columns = []
+
+    def fit(self, df: pd.DataFrame, categorical_columns: List[str]):
+        """전체 데이터에 대해 범주형 인코더 학습"""
+        self.categorical_columns = categorical_columns
+
+        for col in categorical_columns:
+            unique_values = df[col].astype(str).unique()
+            encoder = LabelEncoder()
+            encoder.fit(unique_values)
+
+            self.label_encoders[col] = encoder
+            self.vocab_sizes[col] = len(encoder.classes_)
+
+        logger.info(f"범주형 변수별 고유값 개수:")
+        for col in categorical_columns:
+            logger.info(f"  {col}: {self.vocab_sizes[col]}개")
+
+    def transform(self, df: pd.DataFrame) -> pd.DataFrame:
+        """DataFrame의 범주형 컬럼들을 숫자로 변환"""
+        df_encoded = df.copy()
+
+        for col in self.categorical_columns:
+            df_encoded[col] = self.label_encoders[col].transform(
+                df_encoded[col].astype(str)
+            )
+
+        return df_encoded
+
+    def get_vocab_sizes(self) -> List[int]:
+        """각 범주형 변수의 vocab_size 리스트 반환"""
+        return [self.vocab_sizes[col] for col in self.categorical_columns]
 
 
 class GroupedOperDataset(Dataset):
